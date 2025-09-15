@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { Card } from 'react-native-elements';
+
 
 const SubsidiaryScreen = ({ navigation }) => {
   // Dữ liệu mẫu (thay bằng props hoặc API)
@@ -38,7 +38,19 @@ const SubsidiaryScreen = ({ navigation }) => {
   };
 
   const handleMenuPress = (item) => {
-    alert(`Navigate to ${item}`);
+    if (item === 'Subsidiary') {
+        navigation.navigate('Subsidiary');
+      } else if (item === 'Branches') {
+        navigation.navigate('Branches');
+      } else if (item === 'News') {
+        navigation.navigate('News');
+      } else {
+        alert(`Navigate to ${item}`);
+      }
+  };
+
+  const handleLogoPress = () => {
+    navigation.navigate('Home');
   };
 
   const handleLanguagePress = (lang) => {
@@ -46,68 +58,55 @@ const SubsidiaryScreen = ({ navigation }) => {
     setLanguageDropdownVisible(false);
   };
 
-  const handleButtonPress = () => {
-    navigation.navigate('Game');
-  };
 
-  const handleBranchPress = (branch) => {
-    alert(`View details for ${branch.name}`);
-  };
 
-  const handleEventPress = (event) => {
-    alert(`View details for ${event.title}`);
-  };
 
-  const handleContactPress = () => {
-    alert('Contact information copied or opened!');
-  };
-
-  const handleRecruitmentPress = (position) => {
-    alert(`Apply for ${position.position}`);
-  };
-
-  const handlePartnerPress = (partner) => {
-    alert(`Partner: ${partner.title}`);
-  };
 
   const [isLanguageDropdownVisible, setLanguageDropdownVisible] = useState(false);
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Header giống photoism.co.kr */}
+    <ScrollView
+      style={styles.container}
+      showsVerticalScrollIndicator={true}
+      persistentScrollbar={true}
+      indicatorStyle="black"
+      contentContainerStyle={styles.scrollContent}
+      bounces={true}
+      scrollEventThrottle={16}
+      alwaysBounceVertical={false}
+      nestedScrollEnabled={true}
+    >
+      {/* Header giống photoism.co.kr: Fixed top, logo left, menu center, language right */}
       <View style={styles.header}>
-              <TouchableOpacity style={styles.logo}>
-                <Text style={styles.logoText}>LOGO</Text>
+        <TouchableOpacity style={styles.logo} onPress={handleLogoPress}>
+          <Text style={styles.logoText}>LOGO</Text>
+        </TouchableOpacity>
+        <View style={styles.menu}>
+          {['Subsidiary', 'Branches', 'Partners', 'Projects', 'News'].map((item) => (
+            <TouchableOpacity key={item} onPress={() => handleMenuPress(item)} style={styles.menuItemContainer}>
+              <Text style={styles.menuItem}>{item}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <View style={styles.buttonGroup}>
+          <TouchableOpacity
+            onPress={() => setLanguageDropdownVisible(!isLanguageDropdownVisible)}
+            style={styles.headerButton}
+          >
+            <Text style={styles.buttonText}>Language</Text>
+          </TouchableOpacity>
+          {isLanguageDropdownVisible && (
+            <View style={styles.dropdown}>
+              <TouchableOpacity onPress={() => handleLanguagePress('Korean')}>
+                <Text style={styles.dropdownItem}>Korean</Text>
               </TouchableOpacity>
-              <View style={styles.menu}>
-                {['Subsidiary', 'Branches', 'Partners', 'Projects', 'News'].map((item) => (
-                  <TouchableOpacity key={item} onPress={() => handleMenuPress(item)} style={styles.menuItemContainer}>
-                    <Text style={styles.menuItem}>{item}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-              <View style={styles.buttonGroup}>
-                <TouchableOpacity
-                  onPress={() => setLanguageDropdownVisible(!isLanguageDropdownVisible)}
-                  style={styles.headerButton}
-                >
-                  <Text style={styles.buttonText}>Language</Text>
-                </TouchableOpacity>
-                {isLanguageDropdownVisible && (
-                  <View style={styles.dropdown}>
-                    <TouchableOpacity onPress={() => handleLanguagePress('Korean')}>
-                      <Text style={styles.dropdownItem}>Korean</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleLanguagePress('English')}>
-                      <Text style={styles.dropdownItem}>English</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-                <TouchableOpacity style={styles.headerButton} onPress={handleButtonPress}>
-                  <Text style={styles.buttonText}>Selection</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity onPress={() => handleLanguagePress('English')}>
+                <Text style={styles.dropdownItem}>English</Text>
+              </TouchableOpacity>
             </View>
+          )}
+        </View>
+      </View>
 
       {/* Banner */}
       <View style={styles.banner}>
@@ -117,99 +116,144 @@ const SubsidiaryScreen = ({ navigation }) => {
       </View>
 
       {/* Company Information */}
-      <Card containerStyle={styles.card}>
+      <View style={styles.card}>
         <Text style={styles.sectionTitle}>Company Information</Text>
-        <Text>{subsidiaryData.description}</Text>
-      </Card>
+        <Text style={styles.description}>Short description: Company introduction, vision, mission.</Text>
+      </View>
 
       {/* Historical Timeline */}
-      <View style={styles.timelineContainer}>
+      <View style={styles.card}>
         <Text style={styles.sectionTitle}>Historical Timeline</Text>
-        {subsidiaryData.timeline.map((item, index) => (
-          <Text key={index} style={styles.timelineItem}>{item}</Text>
-        ))}
+        <Text style={styles.timelineItem}>2015 → Company Established</Text>
+        <Text style={styles.timelineItem}>2018 → First Product Launch</Text>
+        <Text style={styles.timelineItem}>2020 → Expand to Korea & Vietnam</Text>
+        <Text style={styles.timelineItem}>2023 → Reach 1M+ Customers</Text>
       </View>
 
       {/* Method of Operation, Vision & Mission, Core Values (Grid row) */}
       <View style={styles.gridRow}>
-        <Card style={styles.gridItem}>
-          <Text style={styles.gridTitle}>Method of Operation</Text>
-        </Card>
-        <Card style={styles.gridItem}>
+        <View style={styles.gridItem}>
+          <Text style={styles.gridTitle}>Method of operation</Text>
+        </View>
+        <View style={styles.gridItem}>
           <Text style={styles.gridTitle}>Vision & Mission</Text>
-          <Text>{subsidiaryData.visionMission}</Text>
-        </Card>
-        <Card style={styles.gridItem}>
+        </View>
+        <View style={styles.gridItem}>
           <Text style={styles.gridTitle}>Core Values</Text>
-          <Text>{subsidiaryData.coreValues}</Text>
-        </Card>
+        </View>
       </View>
 
-      {/* Branches */}
-      <Text style={styles.sectionTitle}>Branches</Text>
-      <View style={styles.branchesGrid}>
-        {subsidiaryData.branches.map((branch, index) => (
-          <TouchableOpacity key={index} onPress={() => handleBranchPress(branch)} style={styles.branchCard}>
-            <Image source={{ uri: 'https://via.placeholder.com/100x100?text=Screenshot' }} style={styles.placeholderImage} />
-            <Text style={styles.branchName}>{branch.name}</Text>
-            <Text>{branch.desc}</Text>
-          </TouchableOpacity>
-        ))}
+      {/* Services Provided */}
+      <Text style={styles.sectionTitle}>Services provided</Text>
+      <View style={styles.servicesRow}>
+        <View style={styles.screenshotContainer}>
+          <Image source={{ uri: 'https://via.placeholder.com/200x150?text=Screenshot' }} style={styles.screenshotImage} />
+        </View>
+        <View style={styles.serviceInfo}>
+          <Text style={styles.serviceText}>Information company</Text>
+        </View>
       </View>
 
-      {/* Featured Events */}
-      <Text style={styles.sectionTitle}>Featured Events</Text>
-      <View style={styles.eventsGrid}>
-        {subsidiaryData.events.map((event, index) => (
-          <TouchableOpacity key={index} onPress={() => handleEventPress(event)} style={styles.eventCard}>
-            <Text style={styles.eventTitle}>{event.title}</Text>
-            <Text>{event.desc}</Text>
-          </TouchableOpacity>
-        ))}
+      {/* Featured Projects */}
+      <Text style={styles.sectionTitle}>Featured Projects</Text>
+      <View style={styles.projectsGrid}>
+        <View style={styles.projectCard}>
+          <Text style={styles.projectTitle}>Project 1</Text>
+          <Text style={styles.projectDesc}>Has time, location, simple description of the event, and at the end a link to a page that describes the event in more detail.</Text>
+        </View>
+        <View style={styles.projectCard}>
+          <Text style={styles.projectTitle}>Project 2</Text>
+          <Text style={styles.projectDesc}>Has time, location, simple introduction of the event, with a link at the end to a page that describes the event in more detail.</Text>
+        </View>
+        <View style={styles.projectCard}>
+          <Text style={styles.projectTitle}>Project 3</Text>
+          <Text style={styles.projectDesc}>Has time, location, simple introduction of the event, with a link at the end to a page that describes the event in more detail.</Text>
+        </View>
       </View>
 
-      {/* Contact for Franchise Cooperation */}
-      <Card containerStyle={styles.card}>
-        <Text style={styles.sectionTitle}>Contact for Franchise Cooperation</Text>
-        <Text>Address: {subsidiaryData.contactFranchise.address}</Text>
-        <Text>Phone: {subsidiaryData.contactFranchise.phone}</Text>
-        <Text>Email: {subsidiaryData.contactFranchise.email}</Text>
-        <Text>Facebook: {subsidiaryData.contactFranchise.facebook}</Text>
-        <TouchableOpacity onPress={handleContactPress}>
-          <Text style={styles.linkText}>Click to contact</Text>
-        </TouchableOpacity>
-      </Card>
-
-      {/* Recruitment */}
-      <Text style={styles.sectionTitle}>Recruitment</Text>
-      <View style={styles.recruitmentGrid}>
-        {subsidiaryData.recruitment.map((recruit, index) => (
-          <TouchableOpacity key={index} onPress={() => handleRecruitmentPress(recruit)} style={styles.recruitmentCard}>
-            <Text style={styles.recruitmentTitle}>{recruit.position}</Text>
-            <Text>{recruit.desc}</Text>
-          </TouchableOpacity>
-        ))}
+      {/* News */}
+      <Text style={styles.sectionTitle}>News</Text>
+      <View style={styles.newsGrid}>
+        <View style={styles.newsCard}>
+          <Image source={{ uri: 'https://via.placeholder.com/150x100?text=Screenshot' }} style={styles.newsImage} />
+          <Text style={styles.newsTitle}>Title</Text>
+          <Text style={styles.newsDesc}>Information about news</Text>
+        </View>
+        <View style={styles.newsCard}>
+          <Image source={{ uri: 'https://via.placeholder.com/150x100?text=Screenshot' }} style={styles.newsImage} />
+          <Text style={styles.newsTitle}>Title</Text>
+          <Text style={styles.newsDesc}>Information about news</Text>
+        </View>
+        <View style={styles.newsCard}>
+          <Image source={{ uri: 'https://via.placeholder.com/150x100?text=Screenshot' }} style={styles.newsImage} />
+          <Text style={styles.newsTitle}>Title</Text>
+          <Text style={styles.newsDesc}>Information about news</Text>
+        </View>
       </View>
 
       {/* Partners Information */}
       <Text style={styles.sectionTitle}>Partners Information</Text>
       <View style={styles.partnersGrid}>
-        {subsidiaryData.partners.map((partner, index) => (
-          <TouchableOpacity key={index} onPress={() => handlePartnerPress(partner)} style={styles.partnerCard}>
-            <Image source={{ uri: 'https://via.placeholder.com/80x80?text=Logo' }} style={styles.logoImage} />
-            <Text style={styles.partnerTitle}>{partner.title}</Text>
-            <Text>{partner.desc}</Text>
-          </TouchableOpacity>
-        ))}
+        <View style={styles.partnerCard}>
+          <Image source={{ uri: 'https://via.placeholder.com/100x80?text=Logo/Screenshot' }} style={styles.partnerImage} />
+          <View style={styles.partnerInfo}>
+            <Text style={styles.partnerTitle}>Title</Text>
+            <Text style={styles.partnerDesc}>Description</Text>
+          </View>
+        </View>
+        <View style={styles.partnerCard}>
+          <Image source={{ uri: 'https://via.placeholder.com/100x80?text=Logo/Screenshot' }} style={styles.partnerImage} />
+          <View style={styles.partnerInfo}>
+            <Text style={styles.partnerTitle}>Title</Text>
+            <Text style={styles.partnerDesc}>Description</Text>
+          </View>
+        </View>
+        <View style={styles.partnerCard}>
+          <Image source={{ uri: 'https://via.placeholder.com/100x80?text=Logo/Screenshot' }} style={styles.partnerImage} />
+          <View style={styles.partnerInfo}>
+            <Text style={styles.partnerTitle}>Title</Text>
+            <Text style={styles.partnerDesc}>Description</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Contact */}
+      <Text style={styles.sectionTitle}>Contact</Text>
+      <View style={styles.contactContainer}>
+        <View style={styles.contactRow}>
+          <Text style={styles.contactLabel}>Address:</Text>
+          <Text style={styles.contactValue}></Text>
+        </View>
+        <View style={styles.contactRow}>
+          <Text style={styles.contactLabel}>Phone:</Text>
+          <Text style={styles.contactValue}></Text>
+        </View>
+        <View style={styles.contactRow}>
+          <Text style={styles.contactLabel}>Email:</Text>
+          <Text style={styles.contactValue}></Text>
+        </View>
+        <View style={styles.contactRow}>
+          <Text style={styles.contactLabel}>Facebook Link:</Text>
+          <Text style={styles.contactValue}></Text>
+        </View>
       </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 150, // Tăng padding để có thể cuộn đến cuối
+    paddingTop: 80, // Thêm padding top để tránh header che
+  },
   header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#f8f8f8',
     padding: 10,
@@ -221,17 +265,12 @@ const styles = StyleSheet.create({
   },
   logo: { flex: 1 },
   logoText: { fontSize: 18, fontWeight: 'bold', color: '#333' },
-  menu: { flex: 2, flexDirection: 'row', justifyContent: 'space-around', marginLeft: -150 },
+  menu: { flex: 3, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   menuItemContainer: {
-    marginHorizontal: 10, // Giữ khoảng cách giữa các mục
+    marginHorizontal: 15,
   },
   menuItem: { color: '#333', fontSize: 14 },
-  buttonGroup: {
-    flex: 1, // Giữ nguyên vị trí và khoảng cách của Language và Selection
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end', // Đảm bảo nút giữ nguyên bên phải
-  },
+  buttonGroup: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' },
   headerButton: {
     backgroundColor: '#4a90e2',
     paddingHorizontal: 10,
@@ -258,32 +297,41 @@ const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
   },
-  banner: { height: 200, justifyContent: 'center', alignItems: 'center', backgroundColor: '#ddd', marginTop: 60 },
+  banner: { height: 200, justifyContent: 'center', alignItems: 'center', backgroundColor: '#ddd' },
   bannerImage: { width: '100%', height: 150 },
   companyName: { fontSize: 24, fontWeight: 'bold', position: 'absolute', top: 20 },
   slogan: { fontSize: 16, position: 'absolute', bottom: 20 },
-  card: { margin: 10 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
-  timelineContainer: { margin: 10 },
-  timelineItem: { fontSize: 14, marginVertical: 5 },
+  card: { margin: 10, padding: 15, backgroundColor: '#fff', borderWidth: 1, borderColor: '#ddd', borderRadius: 5 },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10, marginTop: 20, marginHorizontal: 10 },
+  description: { fontSize: 14, color: '#666', textAlign: 'center' },
+  timelineItem: { fontSize: 14, marginVertical: 2, textAlign: 'center' },
   gridRow: { flexDirection: 'row', justifyContent: 'space-around', margin: 10 },
-  gridItem: { width: '30%', padding: 10 },
-  gridTitle: { fontSize: 16, fontWeight: 'bold' },
-  placeholderImage: { width: 100, height: 100, marginVertical: 5 },
-  branchesGrid: { flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap' },
-  branchCard: { width: '45%', margin: 5, padding: 10, borderWidth: 1, borderColor: '#ddd' },
-  branchName: { fontWeight: 'bold' },
-  eventsGrid: { flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap' },
-  eventCard: { width: '30%', margin: 5, padding: 10, borderWidth: 1, borderColor: '#ddd' },
-  eventTitle: { fontWeight: 'bold' },
-  linkText: { color: '#4a90e2', textDecorationLine: 'underline', marginTop: 5 },
-  recruitmentGrid: { flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap' },
-  recruitmentCard: { width: '45%', margin: 5, padding: 10, borderWidth: 1, borderColor: '#ddd' },
-  recruitmentTitle: { fontWeight: 'bold' },
-  partnersGrid: { flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap' },
-  partnerCard: { width: '30%', margin: 5, padding: 10, borderWidth: 1, borderColor: '#ddd' },
-  partnerTitle: { fontWeight: 'bold' },
-  logoImage: { width: 60, height: 60 },
+  gridItem: { width: '30%', padding: 15, backgroundColor: '#fff', borderWidth: 1, borderColor: '#ddd', borderRadius: 5, alignItems: 'center' },
+  gridTitle: { fontSize: 16, fontWeight: 'bold', textAlign: 'center' },
+  servicesRow: { flexDirection: 'row', margin: 10, backgroundColor: '#fff', borderWidth: 1, borderColor: '#ddd', borderRadius: 5 },
+  screenshotContainer: { flex: 1, padding: 10 },
+  screenshotImage: { width: '100%', height: 120, backgroundColor: '#ddd' },
+  serviceInfo: { flex: 1, padding: 10, justifyContent: 'center' },
+  serviceText: { fontSize: 14, color: '#666' },
+  projectsGrid: { flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap', margin: 10 },
+  projectCard: { width: '30%', margin: 5, padding: 15, borderWidth: 1, borderColor: '#ddd', borderRadius: 5, backgroundColor: '#fff' },
+  projectTitle: { fontWeight: 'bold', marginBottom: 8, fontSize: 16 },
+  projectDesc: { fontSize: 12, color: '#666', lineHeight: 16 },
+  newsGrid: { flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap', margin: 10 },
+  newsCard: { width: '30%', margin: 5, borderWidth: 1, borderColor: '#ddd', borderRadius: 5, backgroundColor: '#fff' },
+  newsImage: { width: '100%', height: 80, backgroundColor: '#ddd' },
+  newsTitle: { fontWeight: 'bold', padding: 8, textAlign: 'center', borderBottomWidth: 1, borderBottomColor: '#ddd' },
+  newsDesc: { padding: 8, fontSize: 12, color: '#666', textAlign: 'center' },
+  partnersGrid: { flexDirection: 'column', margin: 10 },
+  partnerCard: { flexDirection: 'row', margin: 5, padding: 10, borderWidth: 1, borderColor: '#ddd', borderRadius: 5, backgroundColor: '#fff' },
+  partnerImage: { width: 80, height: 60, backgroundColor: '#ddd', marginRight: 10 },
+  partnerInfo: { flex: 1, justifyContent: 'center' },
+  partnerTitle: { fontWeight: 'bold', marginBottom: 4 },
+  partnerDesc: { fontSize: 12, color: '#666' },
+  contactContainer: { margin: 10, padding: 15, borderWidth: 1, borderColor: '#ddd', borderRadius: 5, backgroundColor: '#fff' },
+  contactRow: { flexDirection: 'row', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#ddd' },
+  contactLabel: { width: 100, fontWeight: 'bold' },
+  contactValue: { flex: 1 },
 });
 
 export default SubsidiaryScreen;
